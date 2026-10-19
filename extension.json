@@ -1,0 +1,43 @@
+{
+  "name": "The",
+  "version": "1.0.0",
+  "author": ["JoeyTatu"],
+  "url": "https://www.mediawiki.org/wiki/Extension:The",
+  "descriptionmsg": "the-desc",
+  "license-name": "MIT",
+  "type": "other",
+  "requires": {
+    "MediaWiki": ">= 1.43.0"
+  },
+  "manifest_version": 2,
+  "AutoloadNamespaces": {
+    "MediaWiki\\Extension\\The\\": "includes/"
+  },
+  "Hooks": {
+    "BeforePageDisplay": "MediaWiki\\Extension\\The\\Hooks::onBeforePageDisplay"
+  },
+  "config": {
+    "TheReplacements": {
+      "value": {
+        "the": "hte"
+      }
+    },
+    "TheHighlight": {
+      "value": true
+    }
+  },
+  "ResourceModules": {
+    "ext.the": {
+      "scripts": ["ext.the.js"],
+      "styles": ["ext.the.css"],
+      "dependencies": ["mediawiki"]
+    }
+  },
+  "ResourceFileModulePaths": {
+    "localBasePath": "resources",
+    "remoteExtPath": "The/resources"
+  },
+  "MessagesDirs": {
+    "The": ["i18n"]
+  }
+}

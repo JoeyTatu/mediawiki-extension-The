@@ -1,0 +1,23 @@
+/* Default / light mode: black background, white text. */
+.the-replacement {
+    background-color: #000;
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 4px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+/* Explicit MediaWiki dark mode. */
+html.skin-theme-clientpref-night .the-replacement {
+    background-color: #fff;
+    color: #000;
+}
+
+/* MediaWiki automatic mode when the operating system uses dark mode. */
+@media screen and (prefers-color-scheme: dark) {
+    html.skin-theme-clientpref-os .the-replacement {
+        background-color: #fff;
+        color: #000;
+    }
+}
