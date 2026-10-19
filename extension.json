@@ -1,20 +1,22 @@
 {
   "name": "The",
-  "version": "1.0.0",
-  "author": ["JoeyTatu"],
+  "version": "1.0.1",
+  "author": [
+    "JoeyTatu"
+  ],
   "url": "https://www.mediawiki.org/wiki/Extension:The",
   "descriptionmsg": "the-desc",
   "license-name": "MIT",
   "type": "other",
   "requires": {
-    "MediaWiki": ">= 1.43.0"
+    "MediaWiki": ">= 1.46.0"
   },
   "manifest_version": 2,
   "AutoloadNamespaces": {
     "MediaWiki\\Extension\\The\\": "includes/"
   },
   "Hooks": {
-    "BeforePageDisplay": "MediaWiki\\Extension\\The\\Hooks::onBeforePageDisplay"
+    "BeforePageDisplay": "TheHooks"
   },
   "config": {
     "TheReplacements": {
@@ -28,16 +30,27 @@
   },
   "ResourceModules": {
     "ext.the": {
-      "scripts": ["ext.the.js"],
-      "styles": ["ext.the.css"],
-      "dependencies": ["mediawiki"]
+      "scripts": [
+        "resources/ext.the.js"
+      ],
+      "styles": [
+        "resources/ext.the.css"
+      ],
+      "dependencies": [
+        "mediawiki.util"
+      ],
+      "localBasePath": "",
+      "remoteExtPath": "The"
     }
   },
-  "ResourceFileModulePaths": {
-    "localBasePath": "resources",
-    "remoteExtPath": "The/resources"
-  },
   "MessagesDirs": {
-    "The": ["i18n"]
+    "The": [
+      "i18n"
+    ]
+  },
+  "HookHandlers": {
+    "TheHooks": {
+      "class": "MediaWiki\\Extension\\The\\Hooks"
+    }
   }
 }

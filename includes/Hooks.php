@@ -1,40 +1,29 @@
 <?php
-/**
- * Hooks for the The extension.
- *
- * @license MIT
- */
+
+declare( strict_types = 1 );
 
 namespace MediaWiki\Extension\The;
 
-use MediaWiki\Output\Hook\BeforePageDisplayHook;
-use OutputPage;
-use Skin;
+use MediaWiki\Hook\BeforePageDisplayHook;
 
+/** Loads display-only substitutions on ordinary wiki pages. */
 class Hooks implements BeforePageDisplayHook {
-
-    /**
-     * @param OutputPage $out
-     * @param Skin $skin
-     */
     public function onBeforePageDisplay( $out, $skin ): void {
-        $config = $out->getConfig();
-        $replacements = $config->get( 'TheReplacements' );
-
-        // Only expose validated plain-string mappings to client-side code.
+        $replacements = $out->getConfig()->get( 'TheReplacements' );
         $safe = [];
         if ( is_array( $replacements ) ) {
             foreach ( $replacements as $source => $target ) {
-                if ( is_string( $source ) && $source !== '' && is_string( $target ) ) {
-                    $safe[$source] = $target;
+                if ( is_string( $source ) && trim( $source ) !== '' && is_string( $target ) ) {
+                    $safe[ $source ] = $target;
                 }
             }
         }
+        if ( $safe === [] ) {
+            return;
+        }
 
-        $out->addJsConfigVars( [
-            'wgTheReplacements' => $safe,
-            'wgTheHighlight' => (bool)$config->get( 'TheHighlight' )
-        ] );
+        $out->addJsConfigVars( 'wgTheReplacements', $safe );
+        $out->addJsConfigVars( 'wgTheHighlight', (bool)$out->getConfig()->get( 'TheHighlight' ) );
         $out->addModules( 'ext.the' );
     }
 }

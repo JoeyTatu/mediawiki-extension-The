@@ -1,73 +1,47 @@
-# The — MediaWiki extension
+# Extension:The
 
-**The** is a playful, display-only MediaWiki extension that replaces configured words in rendered article text. By default, `the` appears as `hte`, mimicking a running typo joke. The original wikitext is **never modified**.
-
-## Features
-
-- Default replacement: `the` → `hte` (also `The` → `Hte` and `THE` → `HTE`).
-- Whole-word matching, case-insensitive, with capitalisation preserved.
-- Light mode: **black background and white text**.
-- Dark mode: **white background and black text**.
-- Automatic mode follows the system colour scheme on supported MediaWiki skins.
-- Excludes links, code, editable fields, references and other technical elements.
-- Configurable word mappings and optional highlighting.
-- Applies to standard article content via MediaWiki's `wikipage.content` JavaScript hook.
+A MediaWiki extension that displays deliberate typos in article text (for example, `the` → `hte`) without changing the stored wikitext.
 
 ## Requirements
 
-MediaWiki 1.43 or later and a browser with modern JavaScript Unicode property escape support.
+* MediaWiki 1.46 or later (matching Extension:Pride).
 
 ## Installation
 
-1. Place this directory in `extensions/The` under your MediaWiki installation.
-2. Add the following to `LocalSettings.php`:
-
-   ```php
-   wfLoadExtension( 'The' );
-   ```
-
-3. Refresh the wiki and, if necessary, clear browser cache.
-4. Confirm installation on `Special:Version`.
+1. Put the extension in `extensions/The/`.
+2. Add `wfLoadExtension( 'The' );` to `LocalSettings.php`.
+3. Clear relevant caches and reload an article.
 
 ## Configuration
 
-After `wfLoadExtension( 'The' );` in `LocalSettings.php`:
+The default configuration automatically replaces `the` with `hte`. Whole-word matching is case-insensitive and preserves basic capitalisation: `the` → `hte`, `The` → `Hte`, `THE` → `HTE`.
+
+Add the following **after** `wfLoadExtension( 'The' );` to customise:
 
 ```php
 $wgTheReplacements = [
     'the' => 'hte',
     'because' => 'becuase',
 ];
-
-// Optional: turn off dark/light background highlights.
 $wgTheHighlight = true;
 ```
 
-Mappings are **replacements**, not additions: if you override `$wgTheReplacements`, include the `the` mapping to keep it.
+By default, replacements have black backgrounds and white text in light mode, and white backgrounds with black text in dark mode (including MediaWiki automatic/system preference). Set `$wgTheHighlight = false;` to display substitutions as plain text.
 
-## Example
+Text within links, code, form fields, references, and Pride-highlighted spans is skipped. This makes The compatible with Pride, although **if a term is targeted by both extensions**, whichever runs first gets to decorate it; avoid overlapping configured words. Client-side rendering means text may briefly show unchanged before ResourceLoader initialises.
 
-Stored wikitext:
+## Troubleshooting
 
-> The dog is in the garden.
+In the browser console run:
 
-Displayed to readers (with themed highlighting):
+```js
+mw.loader.getState( 'ext.the' )
+mw.config.get( 'wgTheReplacements' )
+document.querySelectorAll( '.the-replacement' ).length
+```
 
-> Hte dog is in hte garden.
-
-The HTML inserted by the extension is display-only. Editors, API consumers and search engines may see the original source, and copying displayed text may copy the substituted spelling. This extension is a visual joke; **do not rely on it for censorship or security**.
-
-## Limitations
-
-- Matching is performed within individual HTML text nodes, so words split across markup are not replaced.
-- On a page with both Extension:Pride and Extension:The, processing order can affect which text is replaced or highlighted. Both extensions are designed to avoid modifying each other's already-inserted spans, but nesting and replacement order are not guaranteed.
-- The extension does not currently add per-user targeting or special-page processing.
-- Displayed titles outside article content are not modified.
-
-## Development
-
-This repository can be used as a source for a future Wikimedia Gerrit repository request. A Gerrit repository is created by Wikimedia maintainers after review; creating this GitHub repository does not create a Gerrit repository automatically.
+`ready`, `{ the: 'hte' }`, and a positive replacement count on a page with eligible instances of `the` indicate successful loading. If the module fails to load, check MediaWiki's debug log and reload after clearing cache.
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
